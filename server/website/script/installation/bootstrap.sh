@@ -16,11 +16,22 @@ SETTINGSPATH=$REPOPATH/server/website/website/settings
 # Install Ubuntu packages
 echo -e "\n--- Installing Ubuntu packages ---\n"
 apt-get -qq update
-apt-get -y install python3-pip python-dev python-mysqldb rabbitmq-server gradle default-jdk libmysqlclient-dev python3-tk >> $LOG 2>&1
+apt-get -y install zip unzip ant fabric python3-pip python3-dev python3-mysqldb rabbitmq-server openjdk-8-jdk libmysqlclient-dev python3-tk >> $LOG 2>&1
+
+# default jdk 8
+update-java-alternatives --jre-headless --jre --set java-1.8.0-openjdk-amd64
+
+# install sdkman & gradle
+curl -s "https://get.sdkman.io" | bash
+source "/root/.sdkman/bin/sdkman-init.sh"
+sdk install gradle 6.4.1
+
+# set pip source
+pip3 config set global.index-url https://mirrors.aliyun.com/pypi/simple/
 
 echo -e "\n--- Installing Python packages ---\n"
 pip3 install --upgrade pip >> $LOG 2>&1
-pip install -r ${REPOPATH}/server/website/requirements.txt >> $LOG 2>&1
+pip3 install -r ${REPOPATH}/server/website/requirements.txt >> $LOG 2>&1
 
 # Install MySQL
 echo -e "\n--- Install MySQL specific packages and settings ---\n"
@@ -45,4 +56,4 @@ if [ ! -f "$SETTINGSPATH/credentials.py" ]; then
         $SETTINGSPATH/credentials.py >> $LOG 2>&1
 fi
 rm /usr/bin/python
-ln -s /usr/bin/python3.5 /usr/bin/python
+ln -s /usr/bin/python3.6 /usr/bin/python

@@ -119,7 +119,7 @@ def restart_database():
         elif dconf.HOST_CONN == 'remote_docker':
             run('docker restart {}'.format(dconf.CONTAINER_NAME), remote_only=True)
         else:
-            sudo('pg_ctl -D {} -w -t 600 restart -m fast'.format(
+            sudo('/usr/lib/postgresql/9.6/bin/pg_ctl -D {} -w -t 600 restart -m fast'.format(
                 dconf.PG_DATADIR), user=dconf.ADMIN_USER, capture=False)
     elif dconf.DB_TYPE == 'mysql':
         if dconf.HOST_CONN == 'docker':

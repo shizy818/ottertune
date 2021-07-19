@@ -72,7 +72,7 @@ spotbugs {
 // Note (07-29-2019): the HTML report for spotbugs is currently broken
 tasks.withType(com.github.spotbugs.SpotBugsTask) {
     reports {
-        xml.enabled true
+        xml.enabled false
         html.enabled false
     }
 }

@@ -2,14 +2,14 @@
 # vi: set ft=ruby :
 
 VM_NAME = "OtterTuneVM"
-VM_MEMORY = "2048"  # MB
+VM_MEMORY = "4096"  # MB
 
 Vagrant.configure(2) do |config|
   # The online documentation for the configuration options is located at
   # https://docs.vagrantup.com
 
   # Our box
-  config.vm.box = "ubuntu/xenial64"
+  config.vm.box = "ubuntu/bionic64"
 
   # Customize the amount of memory on the VM:
   config.vm.provider "virtualbox" do |vb|

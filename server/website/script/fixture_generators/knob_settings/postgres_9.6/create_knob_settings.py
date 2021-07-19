@@ -82,7 +82,7 @@ PARAMS = OrderedDict()
 PARAM_PREFIX = 'global'
 
 with open("settings.csv", "r") as f:
-    READER = csv.READER(f, delimiter=',')
+    READER = csv.reader(f, delimiter=',')
     HEADER = None
     for i, row in enumerate(READER):
         if i == 0:

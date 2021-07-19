@@ -14,12 +14,6 @@ LOG = logging.getLogger(__name__)
 # tunable knobs in the KnobCatalog will be used instead.
 DEFAULT_TUNABLE_KNOBS = {
     DBMSType.POSTGRES: {
-        "global.autovacuum",
-        "global.archive_mode",
-        "global.effective_cache_size",
-        "global.maintenance_work_mem",
-        "global.max_wal_size",
-        "global.max_worker_processes",
         "global.shared_buffers",
         "global.temp_buffers",
         "global.wal_buffers",
@@ -55,13 +49,15 @@ GB = 1024 ** 3
 MINVAL = 0
 
 # Default maxval when set to None
-MAXVAL = 192 * GB
+# set small value to make it run in VM
+MAXVAL = 0.05 * GB
 
 # Percentage of total CPUs to use for maxval
 CPU_PERCENT = 2.0
 
 # Percentage of total memory to use for maxval
-MEMORY_PERCENT = 0.8
+# set small value to make it run in VM
+MEMORY_PERCENT = 0.05
 
 # Percentage of total storage to use for maxval
 STORAGE_PERCENT = 0.8

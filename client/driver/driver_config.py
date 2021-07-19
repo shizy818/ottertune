@@ -33,16 +33,16 @@ DB_VERSION = '9.6'
 DB_NAME = 'tpcc'
 
 # Database username
-DB_USER = 'dbuser'
+DB_USER = 'postgres'
 
 # Password for DB_USER
-DB_PASSWORD = 'dbpassword'
+DB_PASSWORD = 'abcd123'
 
 # Database admin username (for tasks like restarting the database)
 ADMIN_USER = DB_USER
 
 # Database host address
-DB_HOST = 'localhost'
+DB_HOST = '0.0.0.0'
 
 # Database port
 DB_PORT = '5432'
@@ -184,7 +184,7 @@ CONTROLLER_LOG = os.path.join(LOG_DIR, 'controller.log')
 #==========================================================
 
 # OtterTune website URL
-WEBSITE_URL = 'http://127.0.0.1:8000'
+WEBSITE_URL = 'http://0.0.0.0:8000'
 
 # Code for uploading new results to the website
-UPLOAD_CODE = 'I5I10PXK3PK27FM86YYS'
+UPLOAD_CODE = 'QN8GKL3ENPPN8L7HHTGM'
