@@ -13,6 +13,7 @@ import json
 import os
 import re
 import time
+import jaydebeapi
 from collections import OrderedDict
 from multiprocessing import Process
 
@@ -91,6 +92,8 @@ def create_controller_config():
                          'allowPublicKeyRetrieval=true&useSSL=false').format
         else:
             raise Exception("MySQL Database Version {} Not Implemented !".format(dconf.DB_VERSION))
+    elif dconf.DB_TYPE == 'db2':
+        dburl_fmt = 'jdbc:db2://{host}:{port}/{db}'.format
     else:
         raise Exception("Database Type {} Not Implemented !".format(dconf.DB_TYPE))
 
@@ -143,6 +146,9 @@ def restart_database():
                     fout.write(line)
             fout.write('\n')
         return False
+    elif dconf.DB_TYPE == 'db2':
+        sudo('docker exec -it {} bash -c "su - {} -c \'db2stop; db2start;\'"'.format(
+            dconf.CONTAINER_NAME, dconf.DB_USER))
     else:
         raise Exception("Database Type {} Not Implemented !".format(dconf.DB_TYPE))
     return True
@@ -156,6 +162,9 @@ def drop_database():
     elif dconf.DB_TYPE == 'mysql':
         run("mysql --user={} --password={} -e 'drop database if exists {}'".format(
             dconf.DB_USER, dconf.DB_PASSWORD, dconf.DB_NAME))
+    elif dconf.DB_TYPE == 'db2':
+        sudo("docker exec -it {} bash -c \"su - {} -c 'db2 drop database {}'\"".format(
+            dconf.CONTAINER_NAME, dconf.DB_USER, dconf.DB_NAME))
     else:
         raise Exception("Database Type {} Not Implemented !".format(dconf.DB_TYPE))
 
@@ -168,6 +177,9 @@ def create_database():
     elif dconf.DB_TYPE == 'mysql':
         run("mysql --user={} --password={} -e 'create database {}'".format(
             dconf.DB_USER, dconf.DB_PASSWORD, dconf.DB_NAME))
+    elif dconf.DB_TYPE == 'db2':
+        sudo("docker exec -it {} bash -c \"su - {} -c 'db2 create database {}'\"".format(
+            dconf.CONTAINER_NAME, dconf.DB_USER, dconf.DB_NAME))
     else:
         raise Exception("Database Type {} Not Implemented !".format(dconf.DB_TYPE))
 
@@ -266,6 +278,21 @@ def change_conf(next_conf=None):
     put(tmp_conf_out, dconf.DB_CONF, use_sudo=True)
     local('rm -f {} {}'.format(tmp_conf_in, tmp_conf_out))
 
+@task
+def activate_recommend(next_conf):
+    if isinstance(next_conf, str):
+        with open(next_conf, 'r') as f:
+            recommendation = json.load(
+                f, encoding="UTF-8", object_pairs_hook=OrderedDict)['recommendation']
+    else:
+        recommendation = next_conf
+
+    assert isinstance(recommendation, dict)
+
+    for name, value in recommendation.items():
+        sudo('docker exec -it {} bash -c "su - {} -c \'db2 update db cfg for {} using {} {};\'"'.format(
+            dconf.CONTAINER_NAME, dconf.DB_USER, dconf.DB_NAME, name, value))
+
 
 @task
 def load_oltpbench():
@@ -353,7 +380,11 @@ def save_next_config(next_config, t=None):
 def free_cache():
     if dconf.HOST_CONN not in ['docker', 'remote_docker']:
         with show('everything'), settings(warn_only=True):  # pylint: disable=not-context-manager
-            res = sudo("sh -c \"echo 3 > /proc/sys/vm/drop_caches\"")
+            if dconf.DB_TYPE == 'db2':
+                res = sudo('docker exec -it {} bash -c "echo 3 > /proc/sys/vm/drop_caches"'.format(
+                            dconf.CONTAINER_NAME))
+            else:
+                res = sudo("sh -c \"echo 3 > /proc/sys/vm/drop_caches\"")
             if res.failed:
                 LOG.error('%s (return code %s)', res.stderr.strip(), res.return_code)
     else:
@@ -542,6 +573,12 @@ def dump_database():
     elif dconf.DB_TYPE == 'mysql':
         sudo('mysqldump --user={} --password={} --databases {} > {}'.format(
             dconf.DB_USER, dconf.DB_PASSWORD, dconf.DB_NAME, dumpfile))
+    elif dconf.DB_TYPE == 'db2':
+        run('rm -f /home/vagrant/database/backup/TPCC.*')
+        sudo('docker exec -it {} bash -c "su - {} -c \'db2 backup db {} to /database/backup;\'"'.format(
+            dconf.CONTAINER_NAME, dconf.DB_USER, dconf.DB_NAME))
+        run('mv /home/vagrant/database/backup/{}.* {}'.format(
+            dconf.DB_NAME.upper(), dumpfile))
     else:
         raise Exception("Database Type {} Not Implemented !".format(dconf.DB_TYPE))
     return True
@@ -576,6 +613,13 @@ def restore_database():
             dconf.DB_PASSWORD, dconf.DB_USER, dconf.DB_HOST, dconf.DB_NAME, dumpfile))
     elif dconf.DB_TYPE == 'mysql':
         run('mysql --user={} --password={} < {}'.format(dconf.DB_USER, dconf.DB_PASSWORD, dumpfile))
+    elif dconf.DB_TYPE == 'db2':
+        dt = local('date +%Y%m%d%H%M%S', capture=True)
+        run('cp {} /home/vagrant/database/backup/{}.0.{}.DBPART000.{}.001'.format(
+            dumpfile, dconf.DB_NAME.upper(), dconf.DB_USER, dt))
+        sudo('docker exec -it {} bash -c "su - {} -c \'db2 restore db {} from /database/backup/ REPLACE EXISTING;\'"'.format(
+            dconf.CONTAINER_NAME, dconf.DB_USER, dconf.DB_NAME))
+        run('rm -f /home/vagrant/database/backup/TPCC.*')
     else:
         raise Exception("Database Type {} Not Implemented !".format(dconf.DB_TYPE))
     LOG.info('Finish restoring database')
@@ -673,6 +717,8 @@ def _set_oltpbench_property(name, line):
             else:
                 raise Exception("MySQL Database Version {} "
                                 "Not Implemented !".format(dconf.DB_VERSION))
+        elif dconf.DB_TYPE == 'db2':
+            dburl_fmt = 'jdbc:db2://{host}:{port}/{db}'.format
         else:
             raise Exception("Database Type {} Not Implemented !".format(dconf.DB_TYPE))
         database_url = dburl_fmt(host=dconf.DB_HOST, port=dconf.DB_PORT, db=dconf.DB_NAME)
@@ -736,6 +782,15 @@ def loop(i):
     if check_disk_usage() > dconf.MAX_DISK_USAGE:
         LOG.warning('Exceeds max disk usage %s', dconf.MAX_DISK_USAGE)
 
+    # connect to db2 luw because TOTAL_APP_COMMITS is reset once all connections are closed
+    db2_conn = None
+    if dconf.DB_TYPE == 'db2':
+        db2_conn = jaydebeapi.connect('com.ibm.db2.jcc.DB2Jcc',
+                        'jdbc:db2://{}:{}/{}'.format(
+                            dconf.DB_HOST, dconf.DB_PORT, dconf.DB_NAME),
+                        [dconf.DB_USER, dconf.DB_PASSWORD],
+                        '/ottertune/client/controller/lib/db2jcc.jar')
+
     # run controller from another process
     p = Process(target=run_controller, args=())
     p.start()
@@ -773,6 +828,10 @@ def loop(i):
     # save result
     result_timestamp = save_dbms_result()
 
+    # disconnect to db2 luw
+    if dconf.DB_TYPE == 'db2' and db2_conn is not None:
+        db2_conn.close()
+
     if i >= dconf.WARMUP_ITERATIONS:
         # upload result
         upload_result()
@@ -784,7 +843,10 @@ def loop(i):
         save_next_config(response, t=result_timestamp)
 
         # change config
-        change_conf(response['recommendation'])
+        if dconf.DB_TYPE == 'db2':
+            activate_recommend(response['recommendation'])
+        else:
+            change_conf(response['recommendation'])
 
 
 @task
@@ -828,7 +890,8 @@ def run_loops(max_iter=10):
     dump = dump_database()
     # put the BASE_DB_CONF in the config file
     # e.g., mysql needs to set innodb_monitor_enable to track innodb metrics
-    reset_conf(False)
+    if dconf.DB_TYPE != 'db2':
+        reset_conf(False)
     for i in range(int(max_iter)):
         # restart database
         restart_succeeded = restart_database()
@@ -844,7 +907,10 @@ def run_loops(max_iter=10):
             response = get_result()
             result_timestamp = int(time.time())
             save_next_config(response, t=result_timestamp)
-            change_conf(response['recommendation'])
+            if dconf.DB_TYPE == 'db2':
+                activate_recommend(response['recommendation'])
+            else:
+                change_conf(response['recommendation'])
             continue
 
         # reload database periodically

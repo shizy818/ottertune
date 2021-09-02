@@ -1,0 +1,211 @@
+[
+    {
+        "fields": {
+            "category": "",
+            "maxval": "100",
+            "dbms": 188,
+            "name": "global.DB_MEM_THRESH",
+            "minval": "0",
+            "default": "100",
+            "tunable": true,
+            "enumvals": null,
+            "vartype": "2",
+            "context": "user",
+            "scope": "global",
+            "summary": "Maximum percentage of committed, but currently unused, database shared memory that the database manager will allow before starting to release committed pages of memory back to the operating system",
+            "unit": 3,
+            "description": ""
+        },
+        "model": "website.KnobCatalog"
+    },
+    {
+        "fields": {
+            "category": "",
+            "maxval": "134217728",
+            "dbms": 188,
+            "name": "global.LOCKLIST",
+            "minval": "4",
+            "default": "4096",
+            "tunable": true,
+            "enumvals": null,
+            "vartype": "2",
+            "context": "user",
+            "scope": "global",
+            "summary": "Amount of storage that is allocated to the lock list",
+            "unit": 3,
+            "description": ""
+        },
+        "model": "website.KnobCatalog"
+    },
+    {
+        "fields": {
+            "category": "",
+            "maxval": "100",
+            "dbms": 188,
+            "name": "global.MAXLOCKS",
+            "minval": "0",
+            "default": "10",
+            "tunable": true,
+            "enumvals": null,
+            "vartype": "2",
+            "context": "user",
+            "scope": "global",
+            "summary": "Percentage of the lock list held by an application that must be filled before the database manager performs lock escalation",
+            "unit": 3,
+            "description": ""
+        },
+        "model": "website.KnobCatalog"
+    },
+    {
+        "fields": {
+            "category": "",
+            "maxval": "128000",
+            "dbms": 188,
+            "name": "global.PCKCACHESZ",
+            "minval": "32",
+            "default": "320",
+            "tunable": true,
+            "enumvals": null,
+            "vartype": "2",
+            "context": "user",
+            "scope": "global",
+            "summary": "Caching of sections for static and dynamic SQL and XQuery statements on a database",
+            "unit": 3,
+            "description": ""
+        },
+        "model": "website.KnobCatalog"
+    },
+    {
+        "fields": {
+            "category": "",
+            "maxval": "524288",
+            "dbms": 188,
+            "name": "global.SHEAPTHRES_SHR",
+            "minval": "250",
+            "default": "5000",
+            "tunable": true,
+            "enumvals": null,
+            "vartype": "2",
+            "context": "user",
+            "scope": "global",
+            "summary": "Soft limit on the total amount of shared sort memory reservation available to sort heap-based operations",
+            "unit": 3,
+            "description": ""
+        },
+        "model": "website.KnobCatalog"
+    },
+    {
+        "fields": {
+            "category": "",
+            "maxval": "524288",
+            "dbms": 188,
+            "name": "global.SORTHEAP",
+            "minval": "16",
+            "default": "256",
+            "tunable": true,
+            "enumvals": null,
+            "vartype": "2",
+            "context": "user",
+            "scope": "global",
+            "summary": "Maximum number of private or shared memory pages that an operation that requires sort heap memory allocates",
+            "unit": 3,
+            "description": ""
+        },
+        "model": "website.KnobCatalog"
+    },
+    {
+        "fields": {
+            "category": "",
+            "maxval": "524288",
+            "dbms": 188,
+            "name": "global.CATALOGCACHE_SZ",
+            "minval": "8",
+            "default": "200",
+            "tunable": true,
+            "enumvals": null,
+            "vartype": "2",
+            "context": "user",
+            "scope": "global",
+            "summary": "Maximum space in pages that the catalog cache can use from the database heap",
+            "unit": 3,
+            "description": ""
+        },
+        "model": "website.KnobCatalog"
+    },
+    {
+        "fields": {
+            "category": "",
+            "maxval": "8096",
+            "dbms": 188,
+            "name": "global.LOGBUFSZ",
+            "minval": "128",
+            "default": "256",
+            "tunable": true,
+            "enumvals": null,
+            "vartype": "2",
+            "context": "user",
+            "scope": "global",
+            "summary": "Amount of the database heap (defined by the dbheap parameter) to use as a buffer for log records before writing these records to disk",
+            "unit": 3,
+            "description": ""
+        },
+        "model": "website.KnobCatalog"
+    },
+    {
+        "fields": {
+            "category": "",
+            "maxval": "2147483647",
+            "dbms": 188,
+            "name": "global.UTIL_HEAP_SZ",
+            "minval": "16",
+            "default": "5000",
+            "tunable": false,
+            "enumvals": null,
+            "vartype": "2",
+            "context": "user",
+            "scope": "global",
+            "summary": "amount of memory that is allocated by the database utilities",
+            "unit": 3,
+            "description": ""
+        },
+        "model": "website.KnobCatalog"
+    },
+    {
+        "fields": {
+            "category": "",
+            "maxval": "95",
+            "dbms": 188,
+            "name": "global.CHNGPGS_THRESH",
+            "minval": "5",
+            "default": "60",
+            "tunable": true,
+            "enumvals": null,
+            "vartype": "2",
+            "context": "user",
+            "scope": "global",
+            "summary": "Percentage of changed pages at which the asynchronous page cleaners will be started, if they are not currently active",
+            "unit": 3,
+            "description": ""
+        },
+        "model": "website.KnobCatalog"
+    },
+    {
+        "fields": {
+            "category": "",
+            "maxval": "61440",
+            "dbms": 188,
+            "name": "global.MAXFILOP",
+            "minval": "128",
+            "default": "512",
+            "tunable": true,
+            "enumvals": null,
+            "vartype": "2",
+            "context": "user",
+            "scope": "global",
+            "summary": "Maximum number of file handles that can be open per database",
+            "unit": 3,
+            "description": ""
+        },
+        "model": "website.KnobCatalog"
+    }
+]

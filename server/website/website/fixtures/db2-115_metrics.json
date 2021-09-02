@@ -1,0 +1,14 @@
+[
+    {
+        "fields": {
+            "dbms": 188,
+            "default": null,
+            "scope": "global",
+            "vartype": 2,
+            "name": "sysibmadm.total_app_commits",
+            "summary": "Number of transactions in this database that have been committed",
+            "metric_type": 1
+        },
+        "model": "website.MetricCatalog"
+    }
+]

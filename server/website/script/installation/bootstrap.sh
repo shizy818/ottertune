@@ -21,10 +21,8 @@ apt-get -y install zip unzip ant fabric python3-pip python3-dev python3-mysqldb 
 # default jdk 8
 update-java-alternatives --jre-headless --jre --set java-1.8.0-openjdk-amd64
 
-# install sdkman & gradle
-curl -s "https://get.sdkman.io" | bash
-source "/root/.sdkman/bin/sdkman-init.sh"
-sdk install gradle 6.4.1
+# update pip3
+python -m pip install -U pip
 
 # set pip source
 pip3 config set global.index-url https://mirrors.aliyun.com/pypi/simple/

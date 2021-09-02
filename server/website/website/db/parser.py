@@ -11,6 +11,7 @@ from .myrocks.parser import MyRocksParser
 from .postgres.parser import PostgresParser
 from .oracle.parser import OracleParser
 from .mysql.parser import MysqlParser
+from .db2.parser import Db2Parser
 
 _DBMS_PARSERS = {}
 
@@ -28,6 +29,8 @@ def _get(dbms_id):
             clz = OracleParser
         elif obj.type == DBMSType.MYSQL:
             clz = MysqlParser
+        elif obj.type == DBMSType.DB2:
+            clz = Db2Parser
         else:
             raise NotImplementedError('Implement me! {}'.format(obj))
 

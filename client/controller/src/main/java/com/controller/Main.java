@@ -11,6 +11,7 @@ import com.controller.collectors.MySQLCollector;
 import com.controller.collectors.OracleCollector;
 import com.controller.collectors.PostgresCollector;
 import com.controller.collectors.SAPHanaCollector;
+import com.controller.collectors.DB2Collector;
 import com.controller.types.JSONSchemaType;
 import com.controller.util.FileUtil;
 import com.controller.util.JSONUtil;
@@ -289,6 +290,10 @@ public class Main {
       case ORACLE:
         collector =
             new OracleCollector(config.getDBURL(), config.getDBUsername(), config.getDBPassword());
+        break;
+      case DB2:
+        collector =
+            new DB2Collector(config.getDBURL(), config.getDBUsername(), config.getDBPassword());
         break;
       default:
         LOG.error("Invalid database type");

@@ -52,7 +52,11 @@ dependencies {
 
     // For Oracle, create the directory client/controller/libs and copy the driver
     // (e.g., ojdbc8.jar) into it. The driver must be manually downloaded from Oracle.
-    dependencies {compile files('lib/ojdbc8.jar')}
+    // dependencies {compile files('lib/ojdbc8.jar')}
+
+    // For DB2, copy db2jcc.jar and db2jcc_license_cisuz.jar into the directory
+    // client/controller/libs
+    compile group: 'com.ibm.db2.jcc', name: 'db2jcc', version: 'db2jcc4'
 }
 
 run {

@@ -111,10 +111,11 @@ class TargetObjectives:
         from ..oracle.target_objective import target_objective_list as _oracle_list  # pylint: disable=import-outside-toplevel
         from ..postgres.target_objective import target_objective_list as _postgres_list  # pylint: disable=import-outside-toplevel
         from ..mysql.target_objective import target_objective_list as _mysql_list  # pylint: disable=import-outside-toplevel
+        from ..db2.target_objective import target_objective_list as _db2_list # pylint: disable=import-outside-toplevel
 
         if not self.registered():
             LOG.info('Registering target objectives...')
-            full_list = _myrocks_list + _oracle_list + _postgres_list + _mysql_list
+            full_list = _myrocks_list + _oracle_list + _postgres_list + _mysql_list + _db2_list
             for dbms_type, target_objective_instance in full_list:
                 dbmss = models.DBMSCatalog.objects.filter(type=dbms_type)
                 name = target_objective_instance.name

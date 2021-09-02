@@ -13,6 +13,12 @@ LOG = logging.getLogger(__name__)
 # Default tunable knobs by DBMS. If a DBMS is not listed here, the set of
 # tunable knobs in the KnobCatalog will be used instead.
 DEFAULT_TUNABLE_KNOBS = {
+    DBMSType.DB2: {
+        "global.DB_MEM_THRESH",
+        "global.SHEAPTHRES_SHR",
+        "global.LOGBUFSZ",
+        "global.CHNGPGS_THRESH",
+    },
     DBMSType.POSTGRES: {
         "global.shared_buffers",
         "global.temp_buffers",

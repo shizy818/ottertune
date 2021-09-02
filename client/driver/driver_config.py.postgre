@@ -10,7 +10,7 @@ HOST_CONN = 'local'
 
 # The name of the Docker container for the target database
 # (only required if HOST_CONN = docker)
-CONTAINER_NAME = 'mydb2'  # e.g., 'postgres_container'
+CONTAINER_NAME = None  # e.g., 'postgres_container'
 
 # Host SSH login credentials (only required if HOST_CONN=remote)
 LOGIN_NAME = None
@@ -24,19 +24,19 @@ LOGIN_PORT = None  # Set when using a port other than the SSH default
 #==========================================================
 
 # Postgres, Oracle or Mysql
-DB_TYPE = 'db2'
+DB_TYPE = 'postgres'
 
 # Database version
-DB_VERSION = '11.5'
+DB_VERSION = '9.6'
 
 # Name of the database
 DB_NAME = 'tpcc'
 
 # Database username
-DB_USER = 'db2inst1'
+DB_USER = 'postgres'
 
 # Password for DB_USER
-DB_PASSWORD = 'test123'
+DB_PASSWORD = 'abcd123'
 
 # Database admin username (for tasks like restarting the database)
 ADMIN_USER = DB_USER
@@ -45,7 +45,7 @@ ADMIN_USER = DB_USER
 DB_HOST = '0.0.0.0'
 
 # Database port
-DB_PORT = '50000'
+DB_PORT = '5432'
 
 # If set to True, DB_CONF file is mounted to database container file
 # Only available when HOST_CONN is docker or remote_docker
@@ -53,7 +53,7 @@ DB_CONF_MOUNT = False
 
 # Path to the configuration file on the database server
 # If DB_CONF_MOUNT is True, the path is on the host server, not docker
-DB_CONF = None
+DB_CONF = '/etc/postgresql/9.6/main/postgresql.conf'
 
 # Path to the directory for storing database dump files
 DB_DUMP_DIR = None
@@ -143,7 +143,7 @@ RESTART_SLEEP_SEC = 30
 OLTPBENCH_HOME = os.path.expanduser('~/oltpbench')
 
 # Path to the OLTPBench configuration file
-OLTPBENCH_CONFIG = os.path.join(OLTPBENCH_HOME, 'config/tpcc_config_db2.xml')
+OLTPBENCH_CONFIG = os.path.join(OLTPBENCH_HOME, 'config/tpcc_config_postgres.xml')
 
 # Name of the benchmark to run
 OLTPBENCH_BENCH = 'tpcc'
@@ -187,4 +187,4 @@ CONTROLLER_LOG = os.path.join(LOG_DIR, 'controller.log')
 WEBSITE_URL = 'http://0.0.0.0:8000'
 
 # Code for uploading new results to the website
-UPLOAD_CODE = 'SFGG7KAWS2E92Q60Y4SK'
+UPLOAD_CODE = 'YRXLCTUDM72SKZ3YSK15'
